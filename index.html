@@ -200,6 +200,112 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/15/Android的进阶学习（二）--Activity的启动模式/" itemprop="url">
+                  Android的进阶学习（二）--Activity的启动模式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-15T21:00:11+08:00" content="2015-12-15">
+              2015-12-15
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>好久以前就知道<code>android</code>的<code>Activity</code>有不同的启动方式，但开始始终没有弄明白，现在终于梳理清了。</p>
+<h3 id="u4EFB_u52A1_u6808"><a href="#u4EFB_u52A1_u6808" class="headerlink" title="任务栈"></a>任务栈</h3><p><code>Activity</code>一共有四种不同的启动模式，分别是<code>standard</code> 、<code>singleTop</code>、<code>singleTask</code>、<code>singleInstance</code>，不同的启动模式，就让activity存在于内存中不同的任务栈和栈里的位置。这里我们提到了一个任务栈，其实就是一个<code>后进先出</code>的容器，里面存放着<code>Activity</code>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/295205-6d001f6f2c3b288c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="任务栈.png"></p>
+<p>在这样一个任务栈里面，相当于先让<code>Activity_A</code>进栈（直接启动<code>Activity_A</code>）,然后再让<code>Activity_B</code>进栈（从<code>Activity_A</code>以某种模式启动<code>Activity_B</code>，具体什么方式后面就讲）,剩下的<code>Activity_C</code>、<code>Activity_D</code>也是按照这种方式进栈。然后就是出栈了，首先我们明白现在的任务栈中有4个<code>Activity</code>，接着当我们按手机的<code>back</code>键的时候，就会按照D,C,B,A出栈，这也就是所说的<code>先进后出</code>。当然，屏幕显示的就是栈顶的元素了。</p>
+<h3 id="u56DB_u79CD_u542F_u52A8_u6A21_u5F0F"><a href="#u56DB_u79CD_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="四种启动模式"></a>四种启动模式</h3><p>#####一.standard (标准模式)<br> <code>standard</code>字面意思就是标准，没错，就是标准模式。当<code>Activity</code>以标准模式启动的时候，就会把该<code>Activity</code>给放入栈顶。没错，我们上面的例子就可以用<code>standard</code>模式启动。</p>
+<h4 id="u4E8C-singleTop_28_u6808_u9876_u590D_u7528_u6A21_u5F0F_29"><a href="#u4E8C-singleTop_28_u6808_u9876_u590D_u7528_u6A21_u5F0F_29" class="headerlink" title="二.singleTop(栈顶复用模式)"></a>二.singleTop(栈顶复用模式)</h4><p><code>singleTop</code>模式就是讲，当我们以<code>singleTop</code>启动Activity的时候，如果这时候的栈顶元素也是我们的需要启动的<code>Activity</code>，那么这个<code>Activity</code>就不会再次被创建，而是回调<code>onNewIntent</code> 方法。<br><img src="http://upload-images.jianshu.io/upload_images/295205-e7519eae08615b07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈顶复用.png"></p>
+<p>其实这个还是很好理解的，也就和字面意思一样。好，我们看上面的任务栈，左边就是我们开始的样子（DCBA），然后我们再以<code>singleTop</code>模式去启动D,然后，发现任务栈中还是（DCBA）。这就是栈顶复用模式。</p>
+<h4 id="u4E09-singleTask_28_u6808_u5185_u590D_u7528_u6A21_u5F0F_29"><a href="#u4E09-singleTask_28_u6808_u5185_u590D_u7528_u6A21_u5F0F_29" class="headerlink" title="三.singleTask(栈内复用模式)"></a>三.singleTask(栈内复用模式)</h4><p><code>singleTask</code>是我觉得这几种模式中最难理解的，但是慢慢理一下，发现还是挺简单的。<br>以<code>singleTask</code>模式启动的<code>Activity</code>首先就会寻找自己需要的任务栈，如果没有，就会创建一个，然后把自己给放进栈里面。要是有发现自己需要的任务栈，就会看里面有没有这个<code>Activity</code>的实例，没有的话就在栈顶加入新创的实例，要是有的话就会弹出该实例上面的所有元素，从而把所需求的实例给推到栈顶。<br>这样一说，肯定都还是模模糊糊的，不用怕，我们慢慢理。首先，这里我们提出了一个新的术语，”<code>Activity</code>需要的任务栈”。这里我们需要明白，当我们没有为<code>Activity</code>给指定任务栈的话,那它默认的就是我们项目的包名。当然，我们可以为其指定一个任务栈。</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line"> android:name=<span class="string">".Activity_C"</span>       </span><br><span class="line"><span class="label">android:</span>label=<span class="string">"@string/title_activity_activity__c"</span>    </span><br><span class="line"><span class="label">android:</span>taskAffinity=<span class="string">"com.mathias.www"</span></span><br><span class="line"><span class="label">android:</span>theme=<span class="string">"@style/AppTheme.NoActionBar"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>在<code>Activity</code>标签中，通过<code>taskAffinity</code>（任务相关性）给指定的字符串（字符串中必须包含分割符” . “）,这样当我们以<code>singleTask</code>启动该<code>Activity</code>的时候，就会新建一个任务栈。但是一般来说我们的<code>Activity</code>都是以默认的<code>taskAffinity</code>启动的。</p>
+<h6 id="u76F8_u540C_u7684_u4EFB_u52A1_u6808"><a href="#u76F8_u540C_u7684_u4EFB_u52A1_u6808" class="headerlink" title="相同的任务栈"></a>相同的任务栈</h6><p><img src="http://upload-images.jianshu.io/upload_images/295205-0c4e961a15e8f6f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈内复用.png"></p>
+<p>就如上图一样，起初我们的任务栈中有<code>DCBA</code>四个元素，接着，我们以<code>singleTask</code>模式启动<code>B</code>,那么<code>B</code>就不会被重新创建，而是回调<code>onNewIntent</code>方法，并且，它还会清掉它上面的元素<code>DC</code>(clearTop效果)，这时候你按<code>back</code>键的话就是返回到<code>A</code>。</p>
+<h6 id="u4E0D_u540C_u7684_u4EFB_u52A1_u6808"><a href="#u4E0D_u540C_u7684_u4EFB_u52A1_u6808" class="headerlink" title="不同的任务栈"></a>不同的任务栈</h6><p><img src="http://upload-images.jianshu.io/upload_images/295205-9ddd16be21494934.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈内复用 (1).png"></p>
+<p>图中，我们起初的默认任务栈中有<code>BA</code>两个元素，然后我们以<code>singleTask</code>(不同的任务栈，即改变了<code>taskAffinity</code>)启动<code>C</code>,那么<code>C</code>就会被放到另一个任务栈中，同时，由于<code>C</code>在前台，所以<code>C</code>属于的任务栈也会被变成我们的前台任务栈。<br>当然，有些人可能会说，<code>C</code>不在默认的任务栈中了，但是我们按<code>back</code>键还是会回到<code>B</code>呀？对，当然会回到<code>B</code>。当前台任务栈返回的是时候栈里已经没有了元素了，所以就会返回到后台任务栈了。<br>或许你又会说，那这样启动<code>Activity</code>有什么作用吗？好吧，当我们在同一个应用以不同的任务栈启动的时候，好像这个作用并不大（怪我自己还没找到），但是在一个应用代开另一个应用的时候就起作用了，当一个应用A打开了另一个应用B的<code>Acctvity</code>后，再返回<code>Home</code>,打开应用B,就发现B没有在主界面，而是开始A打开的界面，当然这里还需要一个<code>Activity</code>的属性支持  <code>android:allowTaskReparenting=&quot;true&quot;</code>。</p>
+<h4 id="singleInstance_28_u5355_u5B9E_u4F8B_u6A21_u5F0F_29"><a href="#singleInstance_28_u5355_u5B9E_u4F8B_u6A21_u5F0F_29" class="headerlink" title="singleInstance(单实例模式)"></a>singleInstance(单实例模式)</h4><p>所谓的<code>singleInstance</code>模式，首先，它具备上一个<code>singleTask</code>的所有属性，其次，它只能独自的存在于一个单独的任务栈。简单点就是说,当以<code>singleInstance</code>启动<code>Activity</code>的时候，会为它创建一个新的任务栈，而且这个任务栈只会有它一个<code>Activity</code>，后续的请求也都不会再重新创建它了，所以叫做<code>单例</code>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/295205-2b58afb80ff015a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="单实例.png"></p>
+<p>好吧，我们还是简单的分析一下（搞什么，图和上面的一样）:假设我们当前任务栈中有<code>BA</code>,接着我们以<code>singleInstance</code>模式启动<code>C</code>，那么<code>C</code>就会在一个独立的任务栈中了，然后我们的请求可能会让前台任务栈又变成了默认的（<code>BA</code>），这时候，我们再启动<code>C</code>,就不会创建<code>C</code>,而是直接把<code>C</code>这个任务栈变成前台任务栈，显示<code>C</code>。<br>也许你看过上面的分析又会有疑问了：明明上面的操作用<code>singleTask</code>就能完成,为什么还要用<code>singleInstance</code>?</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/295205-e23f8a4f6cc7beb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="解析.png"></p>
+<p>的确，上面的操作换成<code>singleTask</code>也是可以完成的，但是看我们这图里面的情况，<code>BA</code>为默认的任务栈，<code>C</code>为新建的。这时候，我们启动一个和<code>C</code>任务栈相同的<code>D</code>,那么这里就会变成<code>DC</code>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/295205-48157a3e2c19d351.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="解析 (1).png"><br>然后，我们一系列的操作 ,又让前台任务栈变成了<code>BA</code>,我们这时候启动<code>C</code>，那么由于开始说的<code>clearTop</code>属性就会把<code>D</code>给清理出去了。再创建<code>D</code>的时候就会重建了，然而，如果使用的是<code>singleInsatnce</code>的话就不会出现这种情况了，因为<code>singleInstance</code>中只能有一个<code>Activity</code>。</p>
+<h3 id="u8BBE_u7F6E_u542F_u52A8_u6A21_u5F0F"><a href="#u8BBE_u7F6E_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="设置启动模式"></a>设置启动模式</h3><p>说了这么多，才发现还没有讲如何设置……<br>好吧，设置<code>Activity</code>启动模式有两种方法，一种就是在<code>AndroidManifest.xml</code>中<code>Activity</code>的<code>launchMode</code>：<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity  </span><br><span class="line"><span class="label">android:</span>name=<span class="string">".Activity_B"</span></span><br><span class="line"><span class="label">android:</span>launchMode=<span class="string">"singleInstance"</span>    </span><br><span class="line"><span class="label">android:</span>allowTaskReparenting=<span class="string">"true"</span>    </span><br><span class="line"><span class="label">android:</span>label=<span class="string">"@string/title_activity_activity__b"</span>    </span><br><span class="line"><span class="label">android:</span>theme=<span class="string">"@style/AppTheme.NoActionBar"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>另一种就是在代码中设置标志符了：</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(Activity_A.this,Activity_B.<span class="keyword">class</span>);</span><br><span class="line"><span class="type">intent</span>.setFlags(<span class="type">Intent</span>.FLAG_ACTIVITY_SINGLE_TOP);</span><br><span class="line">startActivity(<span class="type">intent</span>);</span><br></pre></td></tr></table></figure>
+<p>这两种方式都可以设置，但是代码设置的优先级肯定是比在xml中高的(在代码中先解析xml，再设置的)。</p>
+<h3 id="u6700_u540E"><a href="#u6700_u540E" class="headerlink" title="最后"></a>最后</h3><p>我一个苦逼的大学生，而且专业还不对口，希望写写东西，加强理解与记忆，同时也希望自己的理解能帮到更多的人。所以，有什么错误的，写得不好的，希望指出，共同进步。</p>
+<p>还有，这些是我参考《Android开发艺术探索》的，对，就是任大大的。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/12/15/Android的进阶学习(四)--AIDL的使用与理解/" itemprop="url">
                   Android的进阶学习(四)--AIDL的使用与理解
                 </a>
@@ -529,112 +635,6 @@
 <p>基本思路就是这样，当然肯定没有谷歌的<code>Messenger</code>完美，但是可以加强我们对<code>aidl</code>和<code>Messenger</code>的理解了。</p>
 <h3 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h3><p>搞什么嘛，最后还不就是<code>aidl</code>，就是封装了一下而已。这也就是文章开头所说的<code>不显式使用aidl</code>。</p>
 <hr>
-<h3 id="u6700_u540E"><a href="#u6700_u540E" class="headerlink" title="最后"></a>最后</h3><p>我一个苦逼的大学生，而且专业还不对口，希望写写东西，加强理解与记忆，同时也希望自己的理解能帮到更多的人。所以，有什么错误的，写得不好的，希望指出，共同进步。</p>
-<p>还有，这些是我参考《Android开发艺术探索》的，对，就是任大大的。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/12/15/Android的进阶学习（二）--Activity的启动模式/" itemprop="url">
-                  未命名
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2015-12-15T20:54:06+08:00" content="2015-12-15">
-              2015-12-15
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <h2 id="title_uFF1A_Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E8C_uFF09_u2013Activity_u7684_u542F_u52A8_u6A21_u5F0F"><a href="#title_uFF1A_Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E8C_uFF09_u2013Activity_u7684_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="title： Android的进阶学习（二）–Activity的启动模式"></a>title： Android的进阶学习（二）–Activity的启动模式</h2><p>好久以前就知道<code>android</code>的<code>Activity</code>有不同的启动方式，但开始始终没有弄明白，现在终于梳理清了。</p>
-<h3 id="u4EFB_u52A1_u6808"><a href="#u4EFB_u52A1_u6808" class="headerlink" title="任务栈"></a>任务栈</h3><p><code>Activity</code>一共有四种不同的启动模式，分别是<code>standard</code> 、<code>singleTop</code>、<code>singleTask</code>、<code>singleInstance</code>，不同的启动模式，就让activity存在于内存中不同的任务栈和栈里的位置。这里我们提到了一个任务栈，其实就是一个<code>后进先出</code>的容器，里面存放着<code>Activity</code>。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/295205-6d001f6f2c3b288c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="任务栈.png"></p>
-<p>在这样一个任务栈里面，相当于先让<code>Activity_A</code>进栈（直接启动<code>Activity_A</code>）,然后再让<code>Activity_B</code>进栈（从<code>Activity_A</code>以某种模式启动<code>Activity_B</code>，具体什么方式后面就讲）,剩下的<code>Activity_C</code>、<code>Activity_D</code>也是按照这种方式进栈。然后就是出栈了，首先我们明白现在的任务栈中有4个<code>Activity</code>，接着当我们按手机的<code>back</code>键的时候，就会按照D,C,B,A出栈，这也就是所说的<code>先进后出</code>。当然，屏幕显示的就是栈顶的元素了。</p>
-<h3 id="u56DB_u79CD_u542F_u52A8_u6A21_u5F0F"><a href="#u56DB_u79CD_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="四种启动模式"></a>四种启动模式</h3><p>#####一.standard (标准模式)<br> <code>standard</code>字面意思就是标准，没错，就是标准模式。当<code>Activity</code>以标准模式启动的时候，就会把该<code>Activity</code>给放入栈顶。没错，我们上面的例子就可以用<code>standard</code>模式启动。</p>
-<h4 id="u4E8C-singleTop_28_u6808_u9876_u590D_u7528_u6A21_u5F0F_29"><a href="#u4E8C-singleTop_28_u6808_u9876_u590D_u7528_u6A21_u5F0F_29" class="headerlink" title="二.singleTop(栈顶复用模式)"></a>二.singleTop(栈顶复用模式)</h4><p><code>singleTop</code>模式就是讲，当我们以<code>singleTop</code>启动Activity的时候，如果这时候的栈顶元素也是我们的需要启动的<code>Activity</code>，那么这个<code>Activity</code>就不会再次被创建，而是回调<code>onNewIntent</code> 方法。<br><img src="http://upload-images.jianshu.io/upload_images/295205-e7519eae08615b07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈顶复用.png"></p>
-<p>其实这个还是很好理解的，也就和字面意思一样。好，我们看上面的任务栈，左边就是我们开始的样子（DCBA），然后我们再以<code>singleTop</code>模式去启动D,然后，发现任务栈中还是（DCBA）。这就是栈顶复用模式。</p>
-<h4 id="u4E09-singleTask_28_u6808_u5185_u590D_u7528_u6A21_u5F0F_29"><a href="#u4E09-singleTask_28_u6808_u5185_u590D_u7528_u6A21_u5F0F_29" class="headerlink" title="三.singleTask(栈内复用模式)"></a>三.singleTask(栈内复用模式)</h4><p><code>singleTask</code>是我觉得这几种模式中最难理解的，但是慢慢理一下，发现还是挺简单的。<br>以<code>singleTask</code>模式启动的<code>Activity</code>首先就会寻找自己需要的任务栈，如果没有，就会创建一个，然后把自己给放进栈里面。要是有发现自己需要的任务栈，就会看里面有没有这个<code>Activity</code>的实例，没有的话就在栈顶加入新创的实例，要是有的话就会弹出该实例上面的所有元素，从而把所需求的实例给推到栈顶。<br>这样一说，肯定都还是模模糊糊的，不用怕，我们慢慢理。首先，这里我们提出了一个新的术语，”<code>Activity</code>需要的任务栈”。这里我们需要明白，当我们没有为<code>Activity</code>给指定任务栈的话,那它默认的就是我们项目的包名。当然，我们可以为其指定一个任务栈。</p>
-<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line"> android:name=<span class="string">".Activity_C"</span>       </span><br><span class="line"><span class="label">android:</span>label=<span class="string">"@string/title_activity_activity__c"</span>    </span><br><span class="line"><span class="label">android:</span>taskAffinity=<span class="string">"com.mathias.www"</span></span><br><span class="line"><span class="label">android:</span>theme=<span class="string">"@style/AppTheme.NoActionBar"</span> /&gt;</span><br></pre></td></tr></table></figure>
-<p>在<code>Activity</code>标签中，通过<code>taskAffinity</code>（任务相关性）给指定的字符串（字符串中必须包含分割符” . “）,这样当我们以<code>singleTask</code>启动该<code>Activity</code>的时候，就会新建一个任务栈。但是一般来说我们的<code>Activity</code>都是以默认的<code>taskAffinity</code>启动的。</p>
-<h6 id="u76F8_u540C_u7684_u4EFB_u52A1_u6808"><a href="#u76F8_u540C_u7684_u4EFB_u52A1_u6808" class="headerlink" title="相同的任务栈"></a>相同的任务栈</h6><p><img src="http://upload-images.jianshu.io/upload_images/295205-0c4e961a15e8f6f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈内复用.png"></p>
-<p>就如上图一样，起初我们的任务栈中有<code>DCBA</code>四个元素，接着，我们以<code>singleTask</code>模式启动<code>B</code>,那么<code>B</code>就不会被重新创建，而是回调<code>onNewIntent</code>方法，并且，它还会清掉它上面的元素<code>DC</code>(clearTop效果)，这时候你按<code>back</code>键的话就是返回到<code>A</code>。</p>
-<h6 id="u4E0D_u540C_u7684_u4EFB_u52A1_u6808"><a href="#u4E0D_u540C_u7684_u4EFB_u52A1_u6808" class="headerlink" title="不同的任务栈"></a>不同的任务栈</h6><p><img src="http://upload-images.jianshu.io/upload_images/295205-9ddd16be21494934.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="栈内复用 (1).png"></p>
-<p>图中，我们起初的默认任务栈中有<code>BA</code>两个元素，然后我们以<code>singleTask</code>(不同的任务栈，即改变了<code>taskAffinity</code>)启动<code>C</code>,那么<code>C</code>就会被放到另一个任务栈中，同时，由于<code>C</code>在前台，所以<code>C</code>属于的任务栈也会被变成我们的前台任务栈。<br>当然，有些人可能会说，<code>C</code>不在默认的任务栈中了，但是我们按<code>back</code>键还是会回到<code>B</code>呀？对，当然会回到<code>B</code>。当前台任务栈返回的是时候栈里已经没有了元素了，所以就会返回到后台任务栈了。<br>或许你又会说，那这样启动<code>Activity</code>有什么作用吗？好吧，当我们在同一个应用以不同的任务栈启动的时候，好像这个作用并不大（怪我自己还没找到），但是在一个应用代开另一个应用的时候就起作用了，当一个应用A打开了另一个应用B的<code>Acctvity</code>后，再返回<code>Home</code>,打开应用B,就发现B没有在主界面，而是开始A打开的界面，当然这里还需要一个<code>Activity</code>的属性支持  <code>android:allowTaskReparenting=&quot;true&quot;</code>。</p>
-<h4 id="singleInstance_28_u5355_u5B9E_u4F8B_u6A21_u5F0F_29"><a href="#singleInstance_28_u5355_u5B9E_u4F8B_u6A21_u5F0F_29" class="headerlink" title="singleInstance(单实例模式)"></a>singleInstance(单实例模式)</h4><p>所谓的<code>singleInstance</code>模式，首先，它具备上一个<code>singleTask</code>的所有属性，其次，它只能独自的存在于一个单独的任务栈。简单点就是说,当以<code>singleInstance</code>启动<code>Activity</code>的时候，会为它创建一个新的任务栈，而且这个任务栈只会有它一个<code>Activity</code>，后续的请求也都不会再重新创建它了，所以叫做<code>单例</code>。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/295205-2b58afb80ff015a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="单实例.png"></p>
-<p>好吧，我们还是简单的分析一下（搞什么，图和上面的一样）:假设我们当前任务栈中有<code>BA</code>,接着我们以<code>singleInstance</code>模式启动<code>C</code>，那么<code>C</code>就会在一个独立的任务栈中了，然后我们的请求可能会让前台任务栈又变成了默认的（<code>BA</code>），这时候，我们再启动<code>C</code>,就不会创建<code>C</code>,而是直接把<code>C</code>这个任务栈变成前台任务栈，显示<code>C</code>。<br>也许你看过上面的分析又会有疑问了：明明上面的操作用<code>singleTask</code>就能完成,为什么还要用<code>singleInstance</code>?</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/295205-e23f8a4f6cc7beb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="解析.png"></p>
-<p>的确，上面的操作换成<code>singleTask</code>也是可以完成的，但是看我们这图里面的情况，<code>BA</code>为默认的任务栈，<code>C</code>为新建的。这时候，我们启动一个和<code>C</code>任务栈相同的<code>D</code>,那么这里就会变成<code>DC</code>。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/295205-48157a3e2c19d351.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="解析 (1).png"><br>然后，我们一系列的操作 ,又让前台任务栈变成了<code>BA</code>,我们这时候启动<code>C</code>，那么由于开始说的<code>clearTop</code>属性就会把<code>D</code>给清理出去了。再创建<code>D</code>的时候就会重建了，然而，如果使用的是<code>singleInsatnce</code>的话就不会出现这种情况了，因为<code>singleInstance</code>中只能有一个<code>Activity</code>。</p>
-<h3 id="u8BBE_u7F6E_u542F_u52A8_u6A21_u5F0F"><a href="#u8BBE_u7F6E_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="设置启动模式"></a>设置启动模式</h3><p>说了这么多，才发现还没有讲如何设置……<br>好吧，设置<code>Activity</code>启动模式有两种方法，一种就是在<code>AndroidManifest.xml</code>中<code>Activity</code>的<code>launchMode</code>：<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity  </span><br><span class="line"><span class="label">android:</span>name=<span class="string">".Activity_B"</span></span><br><span class="line"><span class="label">android:</span>launchMode=<span class="string">"singleInstance"</span>    </span><br><span class="line"><span class="label">android:</span>allowTaskReparenting=<span class="string">"true"</span>    </span><br><span class="line"><span class="label">android:</span>label=<span class="string">"@string/title_activity_activity__b"</span>    </span><br><span class="line"><span class="label">android:</span>theme=<span class="string">"@style/AppTheme.NoActionBar"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>另一种就是在代码中设置标志符了：</p>
-<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Intent</span> <span class="type">intent</span> = new <span class="type">Intent</span>(Activity_A.this,Activity_B.<span class="keyword">class</span>);</span><br><span class="line"><span class="type">intent</span>.setFlags(<span class="type">Intent</span>.FLAG_ACTIVITY_SINGLE_TOP);</span><br><span class="line">startActivity(<span class="type">intent</span>);</span><br></pre></td></tr></table></figure>
-<p>这两种方式都可以设置，但是代码设置的优先级肯定是比在xml中高的(在代码中先解析xml，再设置的)。</p>
 <h3 id="u6700_u540E"><a href="#u6700_u540E" class="headerlink" title="最后"></a>最后</h3><p>我一个苦逼的大学生，而且专业还不对口，希望写写东西，加强理解与记忆，同时也希望自己的理解能帮到更多的人。所以，有什么错误的，写得不好的，希望指出，共同进步。</p>
 <p>还有，这些是我参考《Android开发艺术探索》的，对，就是任大大的。</p>
 
