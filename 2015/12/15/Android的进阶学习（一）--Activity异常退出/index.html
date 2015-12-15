@@ -52,22 +52,22 @@
 
 
 <meta name="description" content="Android的进阶学习（一）–Activity异常退出最近准备好好从基础学学android，所以还是从必不可少的activity学起走吧。
-####Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
-#####一.当一个activity的config改变的时候，Activity就会被销毁然后重建。">
+Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
+一.当一个activity的config改变的时候，Activity就会被销毁然后重建。而我们最熟悉的co">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MathiasLuo's Blog">
 <meta property="og:url" content="http://luoyy.win/2015/12/15/Android的进阶学习（一）--Activity异常退出/index.html">
 <meta property="og:site_name" content="MathiasLuo's Blog">
 <meta property="og:description" content="Android的进阶学习（一）–Activity异常退出最近准备好好从基础学学android，所以还是从必不可少的activity学起走吧。
-####Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
-#####一.当一个activity的config改变的时候，Activity就会被销毁然后重建。">
+Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
+一.当一个activity的config改变的时候，Activity就会被销毁然后重建。而我们最熟悉的co">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/295205-66f92a73eebf74f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2015-12-15T12:24:53.444Z">
+<meta property="og:updated_time" content="2015-12-15T12:38:06.840Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MathiasLuo's Blog">
 <meta name="twitter:description" content="Android的进阶学习（一）–Activity异常退出最近准备好好从基础学学android，所以还是从必不可少的activity学起走吧。
-####Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
-#####一.当一个activity的config改变的时候，Activity就会被销毁然后重建。">
+Activity的异常退出我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。
+一.当一个activity的config改变的时候，Activity就会被销毁然后重建。而我们最熟悉的co">
 
 
 
@@ -208,7 +208,7 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-12-15T20:24:53+08:00" content="2015-12-15">
+            <time itemprop="dateCreated" datetime="2015-12-15T20:38:06+08:00" content="2015-12-15">
               2015-12-15
             </time>
           </span>
@@ -232,9 +232,9 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA"><a href="#Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA" class="headerlink" title="Android的进阶学习（一）–Activity异常退出"></a>Android的进阶学习（一）–Activity异常退出</h2><p>最近准备好好从基础学学android，所以还是从必不可少的activity学起走吧。</p>
-<p>####Activity的异常退出<br>我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。</p>
-<p>#####一.当一个activity的config改变的时候，Activity就会被销毁然后重建。<br>而我们最熟悉的config的改变就是屏幕方向改变，系统语言改变，还有键盘可见改变了。<br>当然，由于是异常退出，所以正常情况下的<code>onPause</code>、<code>onstop</code>、<code>onDestroy</code>也会被调用。但是，异常的退出，谷歌还是想了办法来解决的。在<code>onstop</code>的前面，系统会调用<code>onSaveInstanceState</code>来保存当前<code>Activity</code>的状态，不过系统只会帮我们保存<code>Activity</code>的视图，而其它的数据 则不会保存，需要你自己复写 <code>onSaveInstanceState</code>来保存了。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSaveInstanceState</span><span class="params">(Bundle outState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSaveInstanceState(outState);</span><br><span class="line">   <span class="comment">//在这里我们可以把我们需要保存的东西给写入Bundle</span></span><br><span class="line">   <span class="comment">//.......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <span itemprop="articleBody"><h1 id="Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA"><a href="#Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA" class="headerlink" title="Android的进阶学习（一）–Activity异常退出"></a>Android的进阶学习（一）–Activity异常退出</h1><p>最近准备好好从基础学学android，所以还是从必不可少的activity学起走吧。</p>
+<h2 id="Activity_u7684_u5F02_u5E38_u9000_u51FA"><a href="#Activity_u7684_u5F02_u5E38_u9000_u51FA" class="headerlink" title="Activity的异常退出"></a>Activity的异常退出</h2><p>我们知道android正常启动下Activity的生命周期，但是Activity的遇到异常情况就不会按照这正常的生命周期了。</p>
+<h2 id="u4E00-_u5F53_u4E00_u4E2Aactivity_u7684config_u6539_u53D8_u7684_u65F6_u5019_uFF0CActivity_u5C31_u4F1A_u88AB_u9500_u6BC1_u7136_u540E_u91CD_u5EFA_u3002"><a href="#u4E00-_u5F53_u4E00_u4E2Aactivity_u7684config_u6539_u53D8_u7684_u65F6_u5019_uFF0CActivity_u5C31_u4F1A_u88AB_u9500_u6BC1_u7136_u540E_u91CD_u5EFA_u3002" class="headerlink" title="一.当一个activity的config改变的时候，Activity就会被销毁然后重建。"></a>一.当一个activity的config改变的时候，Activity就会被销毁然后重建。</h2><p>而我们最熟悉的config的改变就是屏幕方向改变，系统语言改变，还有键盘可见改变了。<br>当然，由于是异常退出，所以正常情况下的<code>onPause</code>、<code>onstop</code>、<code>onDestroy</code>也会被调用。但是，异常的退出，谷歌还是想了办法来解决的。在<code>onstop</code>的前面，系统会调用<code>onSaveInstanceState</code>来保存当前<code>Activity</code>的状态，不过系统只会帮我们保存<code>Activity</code>的视图，而其它的数据 则不会保存，需要你自己复写 <code>onSaveInstanceState</code>来保存了。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSaveInstanceState</span><span class="params">(Bundle outState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSaveInstanceState(outState);</span><br><span class="line">   <span class="comment">//在这里我们可以把我们需要保存的东西给写入Bundle</span></span><br><span class="line">   <span class="comment">//.......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>接着我们保存了数据就会再新建的Activity中读取出来了,读取保存的数据有两个地方，一个就是我们再熟悉不过的<code>onCreate</code>方法里了：</p>
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;       </span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line">    <span class="keyword">if</span>(savedInstanceState != <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">//取出数据 想干嘛就干嘛吧  </span></span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>另一种就是一个独立的回调了：</p>
@@ -245,10 +245,8 @@
 <p>在<code>AndroidManifest</code>中，我们的<code>Activity</code>标签中有一个<code>configChanges</code> 属性，对我们可以通过对它进行设置而让<code>Activity</code>发生了相应的设置变化而不重新创建。</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity   </span><br><span class="line"> android:<span class="property">name</span>=<span class="string">".MainActivity"</span></span><br><span class="line"> android:configChanges=<span class="string">"keyboardHidden|orientation"</span> /&gt;</span><br></pre></td></tr></table></figure>
 <p>可以用<code>|</code>来设置多个属性，当我们这样设置后，那如果我们的屏幕方向改变(或者你设置的其它属性改变)<code>Activity</code>就不会重新创建了，而是回调<code>Activity</code>中的<code>onConfigurationChanged</code>函数了：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;    </span><br><span class="line"><span class="keyword">super</span>.onConfigurationChanged(newConfig);   </span><br><span class="line"> <span class="comment">//回调在这里，我们就可以操作Configuration了   </span></span><br><span class="line"> <span class="comment">//........</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>#####二.内存不足的情况下的异常退出</p>
-<p>内存不足，貌似这是我们都不想遇到的。但是，遇到了内存不足，android还是会像开始那样对<code>Activity</code>进行数据保存和恢复，所以也就不多说了。</p>
-<p>#####最后</p>
-<p>我并没有写<code>damo</code>来验证这些结论，但并不代表这些我们不需要。我觉得用<code>damo</code>去验证是使我们理解并记住所不可缺少的。</p>
+<h2 id="u4E8C-_u5185_u5B58_u4E0D_u8DB3_u7684_u60C5_u51B5_u4E0B_u7684_u5F02_u5E38_u9000_u51FA"><a href="#u4E8C-_u5185_u5B58_u4E0D_u8DB3_u7684_u60C5_u51B5_u4E0B_u7684_u5F02_u5E38_u9000_u51FA" class="headerlink" title="二.内存不足的情况下的异常退出"></a>二.内存不足的情况下的异常退出</h2><p>内存不足，貌似这是我们都不想遇到的。但是，遇到了内存不足，android还是会像开始那样对<code>Activity</code>进行数据保存和恢复，所以也就不多说了。</p>
+<h2 id="u6700_u540E"><a href="#u6700_u540E" class="headerlink" title="最后"></a>最后</h2><p>我并没有写<code>damo</code>来验证这些结论，但并不代表这些我们不需要。我觉得用<code>damo</code>去验证是使我们理解并记住所不可缺少的。</p>
 <p>还有我是参考《Android开发艺术探索》这本书的，对，就是任大大的。</p>
 </span>
       
@@ -385,7 +383,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA"><span class="nav-number">1.</span> <span class="nav-text">Android的进阶学习（一）–Activity异常退出</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android_u7684_u8FDB_u9636_u5B66_u4E60_uFF08_u4E00_uFF09_u2013Activity_u5F02_u5E38_u9000_u51FA"><span class="nav-number">1.</span> <span class="nav-text">Android的进阶学习（一）–Activity异常退出</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity_u7684_u5F02_u5E38_u9000_u51FA"><span class="nav-number">1.1.</span> <span class="nav-text">Activity的异常退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00-_u5F53_u4E00_u4E2Aactivity_u7684config_u6539_u53D8_u7684_u65F6_u5019_uFF0CActivity_u5C31_u4F1A_u88AB_u9500_u6BC1_u7136_u540E_u91CD_u5EFA_u3002"><span class="nav-number">1.2.</span> <span class="nav-text">一.当一个activity的config改变的时候，Activity就会被销毁然后重建。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E8C-_u5185_u5B58_u4E0D_u8DB3_u7684_u60C5_u51B5_u4E0B_u7684_u5F02_u5E38_u9000_u51FA"><span class="nav-number">1.3.</span> <span class="nav-text">二.内存不足的情况下的异常退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u540E"><span class="nav-number">1.4.</span> <span class="nav-text">最后</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
